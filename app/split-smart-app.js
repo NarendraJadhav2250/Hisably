@@ -37,6 +37,13 @@ function initials(value = '') {
   return value.trim().split(/\s+/).slice(0, 2).map((part) => part[0] || '').join('').toUpperCase() || '?';
 }
 
+function authErrorMessage(error) {
+  if (/email rate limit exceeded/i.test(error?.message || '')) {
+    return 'Supabase is rate-limiting signup emails because email confirmation is enabled. In Supabase Dashboard, turn off Authentication → Sign In / Providers → Email → Confirm email for immediate password sign-in. If you keep verification enabled, wait for the email limit to reset or configure custom SMTP.';
+  }
+  return error?.message || 'Authentication failed. Please try again.';
+}
+
 const freshExpense = (members = []) => ({
   title: '', amount: '', paidBy: '', participants: members.map((member) => member.id),
   category: 'Food & Dining', date: new Date().toISOString().slice(0, 10), notes: '',
@@ -249,7 +256,7 @@ export default function SplitSmartApp() {
     } else {
       result = await supabase.auth.signInWithPassword({ email: authForm.email.trim(), password: authForm.password });
     }
-    if (result?.error) setError(result.error.message);
+    if (result?.error) setError(authErrorMessage(result.error));
     setBusy(false);
   }
 
