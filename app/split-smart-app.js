@@ -229,9 +229,16 @@ export default function SplitSmartApp() {
         email: authForm.email.trim(), password: authForm.password,
         options: { data: { full_name: authForm.name.trim() } },
       });
-      if (!result.error && result.data.user) {
-        await supabase.from('profiles').upsert({ id: result.data.user.id, full_name: authForm.name.trim(), preferred_currency: 'INR' });
-        if (!result.data.session) setMessage('Check your email to verify your account, then sign in.');
+      if (!result.error && result.data.user && result.data.session) {
+        const { error: profileError } = await supabase.from('profiles').upsert({
+          id: result.data.user.id,
+          full_name: authForm.name.trim(),
+          preferred_currency: 'INR',
+        });
+        if (profileError) setError(`Account created, but the profile could not be saved: ${profileError.message}`);
+        else setMessage('Account created. You are signed in.');
+      } else if (!result.error && result.data.user) {
+        setError('Email confirmation is enabled in Supabase. Turn off “Confirm email” in Authentication settings to allow sign-up without verification.');
       }
     } else if (authMode === 'reset') {
       result = await supabase.auth.resetPasswordForEmail(authForm.email.trim(), { redirectTo: `${window.location.origin}/` });

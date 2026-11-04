@@ -27,8 +27,8 @@ The first two values are public client configuration; database access is restric
 1. Back up any existing project data and review the migration before applying it.
 2. In Supabase SQL Editor, run `supabase/migrations/202611040001_splitsmart_core.sql` once. It extends the starter’s existing `groups`, `group_members`, and `expenses` tables; it is not intended to be run against an unrelated production schema without review.
 3. Confirm that the migration succeeds and that the `group-receipts` Storage bucket is private.
-4. In Authentication settings, set the Site URL to the local app origin for development and add the production and preview origins you use to the redirect allow list. Configure email verification and production SMTP before inviting customers.
-5. Enable Google OAuth only after configuring the provider credentials and the matching Supabase callback URL.
+4. In Authentication settings, set the Site URL to the local app origin for development and add the production and preview origins you use to the redirect allow list. For immediate email/password sign-up without verification, disable **Confirm email** under Authentication → Sign In / Providers → Email. With confirmation enabled, Supabase does not return a session at sign-up and the app reports the required setting change.
+5. Immediate sign-up skips proof of email ownership. Enable **Confirm email** instead if verified addresses are required for your production risk model. Google OAuth is a separate provider and can be enabled after configuring its credentials and callback URL.
 
 Group creation, guest-member addition, expense creation, and settlement recording run through Postgres functions with authorization checks. Client reads are protected by RLS. Expense amounts and splits are stored as integer minor units. Only completed settlements affect balances; a payer must explicitly confirm a payment, and the database rejects transfers that exceed current balances.
 
