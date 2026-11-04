@@ -11,9 +11,9 @@
 # misc
 .DS_Store
 
-# env — NEVER commit your secret keys
-.env
-.env*.local
+# env — keep all secret-bearing variants out of git
+.env*
+!.env.example
 
 # vercel
 .vercel

@@ -1,14 +1,13 @@
 import './globals.css';
 
 export const metadata = {
-  title: 'SplitSmart',
-  description: 'Split expenses with your group — the easy way.',
+  title: 'SplitSmart | Shared expenses, sorted',
+  description: 'Track shared expenses, split bills fairly, and settle up with your group.',
 };
 
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
 };
 
 export default function RootLayout({ children }) {
